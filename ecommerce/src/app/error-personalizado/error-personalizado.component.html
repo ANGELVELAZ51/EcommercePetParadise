@@ -4,31 +4,73 @@
 <head>
 </head>
 <body>
-    <header>
-        <div class="header-container">
-          <div class="logo">
-            <a href="">
-              <div class="icon-container">
-                <img src="../../assets/img/Background (1).png" alt="PetParadise" style="height: 40px;" height="50px">
-              </div>
-            </a>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <a href="">
+          <div class="icon-container">
+            <img src="../../assets/img/Background (1).png" alt="Inicio Sesion" style="height: 40px;" height="50px">
           </div>
-          <div class="header-icons">
-            <a href="">
-              <div class="icon-container">
-                <img src="../../assets/img/pet-friendly.png" alt="Inicio" style="height: 40px;" height="50px">
-                <span>Inicio</span>
-              </div>
-            </a>
-            <a href="/cart">
-              <div class="icon-container">
-                <img src="../../assets/img/shopping-bag.png" alt="Carrito de compras" style="height: 40px;" height="50px">
-                <span>Compras</span>
-              </div>
-            </a>
-          </div>
+        </a>
+      </div>
+      <div class="search-container">
+        <form (ngSubmit)="buscarProductos()" #searchForm="ngForm" class="search-form">
+          <input type="text" name="searchQuery" [(ngModel)]="searchQuery" placeholder="Buscar por nombre o categoría..." class="search-input" (input)="actualizarSugerencias(searchQuery)">
+          <button type="submit" class="search-button">
+            <i class="fas fa-search"></i>
+            <img src="../../assets/img/finding.png" alt="Perrito con lupa" class="search-icon">
+          </button>
+        </form>
+      
+        <div *ngIf="sugerenciasEnTiempoReal.length > 0" class="sugerencias-flotantes">
+          <ul>
+            <li *ngFor="let producto of sugerenciasEnTiempoReal" (click)="navigateToProductDetails(producto.nombre)">
+              {{ producto.nombre }}
+            </li>
+          </ul>
         </div>
-      </header>
+        <div *ngIf="sugerenciasProductos.length > 0" class="sugerencias-productos">
+          <h4>Sugerencias:</h4>
+          <ul>
+            <li *ngFor="let producto of sugerenciasProductos" (click)="navigateToProductDetails(producto.nombre)">
+              {{ producto.nombre }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="header-icons">
+        <a href="/login">
+          <div class="icon-container">
+            <img *ngIf="!authService.isAuthenticated" (click)="navigateToLogin()"  src="../../assets/img/dog.png" alt="PetParadise " style="height: 40px;" height="50px">
+            <span *ngIf="!authService.isAuthenticated" (click)="navigateToLogin()" >Login</span>
+          </div>
+        </a>
+        <a *ngIf="authService.isAuthenticated" (click)="logout()">
+          <div class="icon-container">
+            <img src="../../assets/img/good-bye (1).png" alt="PetParadise " style="height: 40px;" height="50px">
+            <span *ngIf="authService.isAuthenticated" (click)="logout()" >Logout</span>
+          </div>
+        </a>        
+        <a href="">
+          <div class="icon-container">
+            <img src="../../assets/img/pet-friendly.png" alt="Inicio" style="height: 40px;" height="50px">
+            <span>Inicio</span>
+          </div>
+        </a>
+        <a href="/cart">
+          <div class="icon-container">
+            <img src="../../assets/img/shopping-bag.png" alt="Carrito de compras" style="height: 40px;" height="50px">
+            <span>Carrito</span>
+          </div>
+        </a>
+        <a *ngIf="authService.isAdmin()" href="/agregar">
+          <div class="icon-container">
+            <button type="button" class="btn btn-primary">Botón de Administrador</button>
+          </div>
+        </a>
+        </div>
+    </div>
+  </header>
       <div class="bread-icons" style="margin-top: 5px;">
         <a href="">
           <div class="icon-container">

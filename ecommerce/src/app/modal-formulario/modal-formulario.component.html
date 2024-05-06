@@ -1,0 +1,92 @@
+<div class="modal-backdrop" *ngIf="showModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Formulario de Envío</h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="envioForm" (ngSubmit)="enviarPedido()" >
+            <div class="form-group" >
+              <label for="nombre">Nombre completo</label>
+              <input type="text" class="form-control" id="nombre" formControlName="nombre">
+              <div *ngIf="envioForm.get('nombre')?.invalid && (envioForm.get('nombre')?.dirty || envioForm.get('nombre')?.touched)" class="text-danger">
+                El nombre es obligatorio.
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="correo">Correo electrónico</label>
+              <input type="email" class="form-control" id="correo" formControlName="correo">
+              <div *ngIf="envioForm.get('correo')?.invalid && (envioForm.get('correo')?.dirty || envioForm.get('correo')?.touched)" class="text-danger">
+                <div *ngIf="envioForm.get('correo')?.errors?.['required']">El correo electrónico es obligatorio.</div>
+                <div *ngIf="envioForm.get('correo')?.errors?.['email']">El formato del correo electrónico es incorrecto.</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="domicilio">Domicilio</label>
+              <input type="text" class="form-control" id="domicilio" formControlName="domicilio">
+              <div *ngIf="envioForm.get('domicilio')?.invalid && (envioForm.get('domicilio')?.dirty || envioForm.get('domicilio')?.touched)" class="text-danger">
+                El domicilio es obligatorio.
+              </div>
+            </div>
+            <div class="form-group">
+                <label for="estado">Estado</label>
+                <select class="form-control" id="estado" formControlName="estado">
+                  <option *ngFor="let estado of estadosMexico" [value]="estado">{{ estado }}</option>
+                </select>
+                <div *ngIf="envioForm.get('estado')?.invalid && (envioForm.get('estado')?.dirty || envioForm.get('estado')?.touched)" class="text-danger">
+                  El estado es obligatorio.
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="telefono">Número de teléfono</label>
+                <input type="tel" class="form-control" id="telefono" formControlName="telefono" pattern="[0-9]{10}">
+                <div *ngIf="envioForm.get('telefono')?.invalid && (envioForm.get('telefono')?.dirty || envioForm.get('telefono')?.touched)" class="text-danger">
+                    <div *ngIf="envioForm.get('telefono')?.errors?.['required']">El número de teléfono es obligatorio.</div>
+                    <div *ngIf="envioForm.get('telefono')?.errors?.['pattern']">El número de teléfono debe contener exactamente 10 dígitos numericos.</div>
+                </div>
+            </div>
+            <form [formGroup]="tarjetaForm" (ngSubmit)="enviarDatosTarjeta()">
+                <div class="form-group">
+                  <label for="numeroTarjeta">Número de Tarjeta</label>
+                  <input type="text" class="form-control" id="numeroTarjeta" formControlName="numeroTarjeta" pattern="[0-9]{16}">
+                  <div *ngIf="tarjetaForm.get('numeroTarjeta')?.invalid && (tarjetaForm.get('numeroTarjeta')?.dirty || tarjetaForm.get('numeroTarjeta')?.touched)" class="text-danger">
+                    <div *ngIf="tarjetaForm.get('numeroTarjeta')?.errors?.['required']">El número de tarjeta es obligatorio.</div>
+                    <div *ngIf="tarjetaForm.get('numeroTarjeta')?.errors?.['pattern']">El número de tarjeta debe contener exactamente 16 dígitos numéricos.</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                    <label for="nombreTitular">Nombre del Titular</label>
+                    <input type="text" class="form-control" id="nombreTitular" formControlName="nombreTitular">
+                    <div *ngIf="tarjetaForm.get('nombreTitular')?.invalid && (tarjetaForm.get('nombreTitular')?.dirty || tarjetaForm.get('nombreTitular')?.touched)" class="text-danger">
+                      <div *ngIf="tarjetaForm.get('nombreTitular')?.errors?.['required']">El nombre del titular es obligatorio.</div>
+                    </div>
+                  </div>
+                <div class="form-group">
+                  <label for="fechaVencimiento">Fecha de Vencimiento (MM/YY)</label>
+                  <input type="text" class="form-control" id="fechaVencimiento" formControlName="fechaVencimiento" pattern="(0[1-9]|1[0-2])\/\d{2}">
+                  <div *ngIf="tarjetaForm.get('fechaVencimiento')?.invalid && (tarjetaForm.get('fechaVencimiento')?.dirty || tarjetaForm.get('fechaVencimiento')?.touched)" class="text-danger">
+                    <div *ngIf="tarjetaForm.get('fechaVencimiento')?.errors?.['required']">La fecha de vencimiento es obligatoria.</div>
+                    <div *ngIf="tarjetaForm.get('fechaVencimiento')?.errors?.['pattern']">El formato de la fecha de vencimiento debe ser MM/YY.</div>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="cvv">CVV</label>
+                  <input type="text" class="form-control" id="cvv" formControlName="cvv" pattern="[0-9]{3,4}">
+                  <div *ngIf="tarjetaForm.get('cvv')?.invalid && (tarjetaForm.get('cvv')?.dirty || tarjetaForm.get('cvv')?.touched)" class="text-danger">
+                    <div *ngIf="tarjetaForm.get('cvv')?.errors?.['required']">El CVV es obligatorio.</div>
+                    <div *ngIf="tarjetaForm.get('cvv')?.errors?.['pattern']">El CVV debe contener exactamente 3 o 4 dígitos numéricos.</div>
+                  </div>
+                </div>
+              </form>
+            <button type="submit" class="btn btn-primary" [disabled]="envioForm.invalid" style="margin-top: 10px;">Enviar Pedido</button>
+                    <div *ngIf="pedidoDetalles">
+
+        </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

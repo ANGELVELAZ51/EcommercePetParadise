@@ -8,21 +8,48 @@
     <div class="logo">
       <a href="">
         <div class="icon-container">
-          <img src="../../assets/img/Background (1).png" alt="Inicio Sesion" style="height: 40px" height="50px"/>
+          <img src="../../assets/img/Background (1).png" alt="PetParadise" style="height: 40px;" height="50px">
         </div>
       </a>
     </div>
+    <div class="search-container">
+      <form (ngSubmit)="buscarProductos()" #searchForm="ngForm" class="search-form" >
+        <input type="text" name="searchQuery" [(ngModel)]="searchQuery" placeholder="¿A donde quieres ir?" class="search-input" (input)="actualizarSugerencias(searchQuery)" style="height: 50px;">
+        <button type="submit" class="search-button">
+          <i class="fas fa-search"></i>
+          <img src="../../assets/img/finding.png" alt="Perrito con lupa" class="search-icon">
+        </button>
+      </form>
+    
+      <div *ngIf="sugerenciasEnTiempoReal.length > 0" class="sugerencias-flotantes">
+        <ul>
+          <li *ngFor="let producto of sugerenciasEnTiempoReal" (click)="navigateToProductDetails(producto.nombre)">
+            {{ producto.nombre }}
+          </li>
+        </ul>
+      </div>
+    
+      <!-- Sugerencias anteriores -->
+      <div *ngIf="sugerenciasProductos.length > 0" class="sugerencias-productos">
+        <h4>Sugerencias:</h4>
+        <ul>
+          <li *ngFor="let producto of sugerenciasProductos" (click)="navigateToProductDetails(producto.nombre)">
+            {{ producto.nombre }}
+          </li>
+        </ul>
+      </div>
+    </div>
     <div class="header-icons">
-      <a *ngIf="authService.isAuthenticated" (click)="logout()">
-        <div class="icon-container">
-          <img src="../../assets/img/good-bye (1).png" alt="PetParadise " style="height: 40px;" height="50px">
-          <span *ngIf="authService.isAuthenticated" (click)="logout()" >Logout</span>
-        </div>
-      </a> 
       <a href="">
         <div class="icon-container">
-          <img src="../../assets/img/pet-friendly.png" alt="Inicio" style="height: 40px" height="50px"/>
+          <img src="../../assets/img/pet-friendly.png" alt="Inicio" style="height: 40px;" height="50px">
           <span>Inicio</span>
+        </div>
+      </a>
+      <a href="/cart">
+        <div class="icon-container">
+          <img src="../../assets/img/shopping-bag.png" alt="Carrito de compras" style="height: 40px;" height="50px">
+          <span>Compras</span>
         </div>
       </a>
     </div>

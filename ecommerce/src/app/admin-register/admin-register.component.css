@@ -1,10 +1,9 @@
 body {
-
-    font-family: Arial, sans-serif;
+    font-family: sans-serif;
+    background-color: #fff;
   }
   
-
-header {
+  header {
     background-image: linear-gradient(180deg, #6de8ed 10%, #ebe3d9 90%);  border-radius: 5px;
     color: #000000;
     padding: 20px;
@@ -14,15 +13,15 @@ header {
   .header-icons a {
     display: inline-block;
     margin-right: 10px;
-    text-align: center; /* Alinea el texto al centro */
-    color: #000000; /* Color del texto */
-    text-decoration: none; /* Elimina el subrayado predeterminado del enlace */
+    text-align: center;
+    color: #000000; 
+    text-decoration: none; 
   }
   
   .header-icons .icon-container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Alinea los íconos y el texto al centro verticalmente */
+    align-items: center;
   }
   
   .header-icons img {
@@ -53,6 +52,7 @@ header {
     align-items: center;
     margin-right: 20px;
   }
+  
   /* buscador */
   .header-container {
     display: flex;
@@ -125,19 +125,71 @@ header {
     transform: scale(1.2); /* Aumenta el tamaño de la imagen en un 20% */
   }
   
+  /* header icon */
+  .header-icons {
+    display: flex;
+    align-items: center;
+  }
   
-/* Migas de pna */
-.bread-icons a {
+  .icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 10px;
+  }
+  
+  .icon-container span {
+    font-size: 12px;
+    margin-top: 5px;
+  }
+  .slider {
+    width: 100%;
+    height: 300px;
+    margin: auto;
+    overflow: hidden;  
+    border-radius: 10px;
+    margin-top: 1%;
+    margin-bottom: 0%;
+  }
+  
+  .slider ul {
+    display: flex;
+    padding: 0;
+    width: 300%; /* Ajustado para tres imágenes */
+    animation: cambio 10s infinite alternate linear;
+  }
+  
+  .slider li {
+    width: 100%;
+    list-style: none;
+  }
+  
+  .slider img {
+    width: 100%; 
+  }
+  
+  @keyframes cambio {
+    0% { margin-left: 0; }
+    33.33% { margin-left: 0; }
+  
+    33.34% { margin-left: -100%; }
+    66.66% { margin-left: -100%; }
+  
+    66.67% { margin-left: -200%; }
+    100% { margin-left: -200%; }
+  }
+  
+  /* Migas de pna */
+  
+  .bread-icons a {
     margin-left: 20px;
     display: inline-block;
-    margin-right: 10px;
     text-align: center; /* Alinea el texto al centro */
     color: #000000; /* Color del texto */
     text-decoration: none; /* Elimina el subrayado predeterminado del enlace */
   }
   
   .bread-icons .icon-container {
-    background-color: #ffffff00;
     display: flex;
     flex-direction: column;
     align-items: center; /* Alinea los íconos y el texto al centro verticalmente */
@@ -154,33 +206,51 @@ header {
   .bread-icons a:hover img {
     transform: scale(1.1);
   }
-  /* Error */
   
-  .container {
-    text-align: center;
+  .registro-container {
+    animation: slideInDown 1s forwards; /* Animación de entrada desde arriba */
+    width: 400px; /* Aumentar el ancho del formulario */
+    margin: 0 auto;
+    margin-top: 100px;
+    padding: 40px; /* Aumentar el espacio interno del formulario */
+    border: 0px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
+  }
+
+  @keyframes slideInDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+  }
+  .form-group {
+    margin-bottom: 15px;
   }
   
-  .error-image {
-    max-width: 350px;
-    margin-bottom: 30px;
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #092a0a; /* Cambiar el color del texto del enlace */
+    text-decoration: none; /* Eliminar el subrayado predeterminado del enlace */
+    font-weight: bold; /* Hacer el texto del enlace en negrita */
+    align-self: center;
   }
   
-  h1 {
-    font-size: 36px;
-    color: #333;
-    margin-bottom: 20px;
+
+  .register-form {
+    animation: slideInDown 1s forwards; /* Animación de entrada desde arriba */
+    width: 400px; /* Aumentar el ancho del formulario */
+    margin: 0 auto;
+    margin-top: 100px;
+    padding: 40px; /* Aumentar el espacio interno del formulario */
+    border: 0px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.2);
   }
   
-  p {
-    font-size: 18px;
-    color: #666;
-    margin-bottom: 30px;
-  }
-  
-  .btn {
-    background-color: #4CAF50;
-    color: #fff;
-    padding: 10px 20px;
-    text-decoration: none;
-    border-radius: 4px;
-  }

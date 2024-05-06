@@ -20,7 +20,7 @@ const UsuarioSchema = new mongoose.Schema({
   },
   rol: {
     type: String,
-    default: 'usuario'
+    default: 'usuario',
   },
   fechaRegistro: {
     type: Date,

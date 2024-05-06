@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Usuario = require('../models/Usuario');
 const crypto = require('crypto');
-const { enviarCorreoRestablecimientoContrasena,enviarCorreoInicioSesion,enviarCorreoRegistro} = require('../utils/email');
+const { transporter, enviarCorreoRestablecimientoContrasena, enviarCorreoInicioSesion, enviarCorreoRegistro, enviarCorreoPedido  } = require('../utils/email');
 
 // Ruta de registro de usuarios
 router.post('/registro', async (req, res) => {
@@ -221,5 +221,76 @@ router.post('/reset-password', async (req, res) => {
   });
 });
 
+router.post('/enviar-pedido', async (req, res) => {
+  try {
+    const requestData = req.body;
+    const { token, pedidoDetalles } = requestData;
 
+    // Verificar y decodificar el token JWT
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decoded.usuario.id;
+
+    // Buscar el usuario por su ID
+    const usuario = await Usuario.findById(userId);
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+    console.log('Detalles del pedido:', pedidoDetalles);
+
+    if (!pedidoDetalles || !pedidoDetalles.productos || pedidoDetalles.productos.length === 0) {
+      return res.status(400).json({ mensaje: 'Detalles del pedido incompletos' });
+    }
+
+    // Llamar a la función enviarCorreoPedido con los detalles del pedido
+    await enviarCorreoPedido(usuario.email, pedidoDetalles);
+    res.json({ mensaje: 'Pedido y formulario enviados correctamente' });
+  } catch (error) {
+    console.error('Error al enviar el pedido y el formulario:', error);
+    res.status(500).json({ mensaje: 'Error al enviar el pedido y el formulario' });
+  }
+});
+router.post('/registroadmin', async (req, res) => {
+  const { nombre, email, password } = req.body;
+
+  try {
+    // Verificar si el usuario ya existe
+    let usuario = await Usuario.findOne({ email });
+    if (usuario) {
+      return res.status(400).json({ msg: 'El usuario ya existe' });
+    }
+
+    // Crear un nuevo usuario
+    usuario = new Usuario({
+      nombre,
+      email,
+      password,
+      rol: 'administrador'
+    });
+
+    // Hashear la contraseña
+    const salt = await bcrypt.genSalt(10);
+    usuario.password = await bcrypt.hash(password, salt);
+
+    // Guardar el usuario
+    await usuario.save();
+
+    // Generar token JWT
+    const payload = { usuario: { id: usuario.id, rol: usuario.rol } };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Enviar el token por correo electrónico
+    try {
+      await enviarCorreoRegistro(email, token);
+      console.log('Token enviado al correo electrónico:', email);
+    } catch (error) {
+      console.error('Error al enviar el token por correo electrónico:', error);
+    }
+
+    res.json({ msg: 'Usuario registrado correctamente' });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('Error en el servidor');
+  }
+});
 module.exports = router;

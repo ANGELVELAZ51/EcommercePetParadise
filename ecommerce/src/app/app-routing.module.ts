@@ -15,10 +15,12 @@ import { AuthGuard } from './auth.guard';
 import { AdminComponent } from './admin/admin/admin.component';
 import { ValidateTokenComponent } from './validate-token/validate-token.component';
 import { ValidateTokenLoginComponent } from './validate-token-login/validate-token-login.component';
+import { AdminRegisterComponent } from './admin-register/admin-register.component';
 
 const routes: Routes = [
   { path: '', component:  ProductComponent },
   { path: 'agregar', component: ProductRegisterComponent, canActivate: [AuthGuard] },
+  { path: 'registroadmin', component: AdminRegisterComponent , canActivate: [AuthGuard] }, // Ruta protegida
   { path: 'info',  component: InformacionComponent},
   { path: 'login',  component: LoginComponent},
   { path: 'token',  component: ValidateTokenComponent },
@@ -28,7 +30,6 @@ const routes: Routes = [
   { path: 'product-detail/:id', component:  ProductDetailsComponent },
   { path: 'cart', component:  CartComponent },
   { path: 'registro', component:  RegistroComponent },
-  { path: 'registroP', component: AdminComponent}, // Ruta protegida
   { path: '', redirectTo: '', pathMatch: 'full' },
   { path: '**',  component: ErrorPersonalizadoComponent},
   { path: 'footer',  component: FooterComponent}, 

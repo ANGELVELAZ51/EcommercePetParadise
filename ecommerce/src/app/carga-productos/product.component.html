@@ -29,8 +29,6 @@
             </li>
           </ul>
         </div>
-      
-        <!-- Sugerencias anteriores -->
         <div *ngIf="sugerenciasProductos.length > 0" class="sugerencias-productos">
           <h4>Sugerencias:</h4>
           <ul>
@@ -65,7 +63,12 @@
             <span>Carrito</span>
           </div>
         </a>
-      </div>
+        <a *ngIf="authService.isAdmin()" href="/agregar">
+          <div class="icon-container">
+            <button type="button" class="btn btn-primary">Botón de Administrador</button>
+          </div>
+        </a>
+        </div>
     </div>
   </header>
 

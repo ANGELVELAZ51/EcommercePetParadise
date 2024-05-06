@@ -16,6 +16,80 @@ header {
   justify-content: space-between;
 }
 
+
+
+/* buscador */
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px;
+}
+
+.search-container {
+  flex-grow: 1;
+  margin: 0 20px;
+  max-width: 400px;
+  align-items: center;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  background-color: #ffffff8c;
+  border: 1px solid #ffffff8c;
+  border-radius: 20px;
+  padding: 5px 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-input {
+  border: none;
+  outline: none;
+  font-size: 14px;
+  padding: 6px;
+  width: 100%;
+  background-color: #ffffff00; 
+
+}
+
+.search-button {
+  background-color: transparent;
+  border: none;
+  color: #333;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 6px;
+  transition: color 0.3s;
+}
+
+.search-button:hover {
+  color: #007BFF;
+}
+.search-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  transition: opacity 0.5s;
+  transition: transform 0.3s ease;
+}
+
+.search-icon {
+  height: 40px; /* Ajusta la altura según el tamaño deseado */
+  width: auto; /* Mantiene la relación de aspecto de la imagen */
+  transition: transform 0.3s ease;
+}
+
+.search-button:hover {
+  opacity: 0.9; /* Reduce ligeramente la opacidad al pasar el mouse por encima */
+}
+.search-button:hover .search-icon {
+  transform: scale(1.2); /* Aumenta el tamaño de la imagen en un 20% */
+}
+
 /* Estilos nuevos para la tarjeta */
 .card {
   background-color: #fff;

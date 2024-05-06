@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { Producto } from '../models/producto';
+import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-informacion',
@@ -9,25 +10,59 @@ import { Producto } from '../models/producto';
   styleUrls: ['./informacion.component.css']
 })
 export class InformacionComponent {
-
   listProductos: Producto[] = [];
   listProductosOriginal: Producto[] = [];
   searchQuery: string = '';
   sugerenciasProductos: Producto[] = [];
   sugerenciasEnTiempoReal: Producto[] = [];
+  isAdmin: boolean = false; 
+
 
   private routesMap = new Map([
+    ['registroadmin','/registroadmin'],
     ['login', '/login'],
     ['inicio de sesión', '/login'],
+    ['inicio', ''],
     ['carrito', '/cart'],
     ['agregar','/agregar'],
     ['informacion','/info'],
-    ['inicio',''],
+    ['mapa del sitio', '../../../assets/img/Mapa del sitio.jpg'],
 
   ]);
+  constructor( private router: Router,    private toastr: ToastrService,     public authService: AuthService,
+  ) { }
 
-  constructor( private router: Router,) { }
+  ngOnInit(): void {
+      // Verifica la autenticación al cargar el componente
+  this.checkAuthentication();
+    // Verifica si el usuario ya está autenticado al cargar el componente
+  const token = localStorage.getItem('token');
+  this.authService.isAuthenticated = !!token;
+}
 
+// Método para verificar la autenticación
+checkAuthentication(): void {
+  const token = localStorage.getItem('token');
+  this.authService.isAuthenticated = !!token;
+}
+
+navigateToLogin(): void {
+  this.router.navigate(['/login']);
+}
+
+logout(): void {
+  this.authService.logout();
+  this.toastr.success('¡Ha cerrado sesión!', 'Sesión cerrada');
+  // Verificar la autenticación después de cerrar sesión
+  this.checkAuthentication();
+  // Opcionalmente, puedes redirigir a la página de inicio o de inicio de sesión después de cerrar sesión
+  this.router.navigate(['/login']);
+}
+  // Método para extender la sesión cuando el usuario hace clic en el mensaje de advertencia
+  extendSession(): void {
+    this.authService.extendSession();
+  }
+  
   buscarProductos(): void {
     const query = this.searchQuery.toLowerCase().trim();
     this.sugerenciasProductos = []; // Reiniciar las sugerencias

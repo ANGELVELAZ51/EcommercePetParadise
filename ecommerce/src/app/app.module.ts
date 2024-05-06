@@ -24,6 +24,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { AdminComponent } from './admin/admin/admin.component';
 import { ValidateTokenComponent } from './validate-token/validate-token.component';
 import { ValidateTokenLoginComponent } from './validate-token-login/validate-token-login.component';
+import { ModalFormularioComponent } from './modal-formulario/modal-formulario.component';
+import { AdminRegisterComponent } from './admin-register/admin-register.component';
 
 
 @NgModule({
@@ -43,7 +45,9 @@ import { ValidateTokenLoginComponent } from './validate-token-login/validate-tok
     ResetPasswordComponent,
     AdminComponent,
     ValidateTokenComponent,
-    ValidateTokenLoginComponent
+    ValidateTokenLoginComponent,
+    ModalFormularioComponent,
+    AdminRegisterComponent
 
   ],
   imports: [
@@ -55,6 +59,8 @@ import { ValidateTokenLoginComponent } from './validate-token-login/validate-tok
     BrowserAnimationsModule,
     ReactiveFormsModule,
     ToastrModule.forRoot({positionClass: 'toast-bottom-center',}),
+    BrowserAnimationsModule, 
+    ToastrModule.forRoot(),
   ],
   providers: [ProductoService,  AuthService,     ],
   bootstrap: [AppComponent]

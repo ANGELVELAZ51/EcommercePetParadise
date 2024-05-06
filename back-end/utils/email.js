@@ -66,6 +66,7 @@ const transporter = nodemailer.createTransport({
 // };
 
 //Función para enviar correo de registro
+
 const enviarCorreoRegistro = async (email, token) => {
   try {
     const mailOptions = {
@@ -222,4 +223,48 @@ const enviarCorreoRestablecimientoContrasena = async (email, token) => {
   }
 };
 
-module.exports = { enviarCorreoRestablecimientoContrasena,enviarCorreoInicioSesion,enviarCorreoRegistro};
+const enviarCorreoPedido = async (email, pedidoDetalles) => {
+  try {
+    const productosList = pedidoDetalles.productos.map(producto => `
+      <li>
+        <p>Producto: ${producto.producto}</p>
+        <p>Cantidad: ${producto.cantidad}</p>
+        <p>Precio total: ${producto.precioTotal}</p>
+      </li>
+    `).join('');
+
+    const mailOptions = {
+      from: 'angelvelazsalazar@gmail.com',
+      to: email,
+      subject: 'Detalles de tu pedido',
+      html: `
+        <h1>Detalles de tu pedido</h1>
+        <p>Nombre del comprador: ${pedidoDetalles.nombre}</p>
+        <p>Domicilio de entrega: ${pedidoDetalles.domicilio}</p>
+        <p>Estado o municipio: ${pedidoDetalles.estado}</p>
+        <p>Número telefónico: ${pedidoDetalles.telefono}</p>
+        <p>Costo del producto: ${pedidoDetalles.totalAPagar}</p>
+        <h2>Productos:</h2>
+        <ul>${productosList}</ul>
+      `
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log('Correo electrónico de pedido enviado correctamente a:', email);
+  } catch (error) {
+    console.error('Error al enviar el correo electrónico de pedido:', error);
+    // Manejo de errores
+  }
+};
+
+module.exports = {
+  enviarCorreoPedido,
+};
+
+
+module.exports = {
+  enviarCorreoRestablecimientoContrasena,
+  enviarCorreoInicioSesion,
+  enviarCorreoRegistro,enviarCorreoPedido
+};
+

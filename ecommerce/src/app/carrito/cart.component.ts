@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ProductoService } from '../services/producto.service';
 import { CartItem } from '../models/cartItem';
 import { Producto } from '../models/producto';
 import { Router } from '@angular/router';
+import { ModalFormularioComponent } from '../modal-formulario/modal-formulario.component';
+import { AuthService } from '../services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-cart',
@@ -17,19 +20,22 @@ export class CartComponent implements OnInit {
   searchQuery: string = '';
   sugerenciasProductos: Producto[] = [];
   sugerenciasEnTiempoReal: Producto[] = [];
-
+  totalAPagar: number = 0;
+  @ViewChild(ModalFormularioComponent) modalFormularioComponent!: ModalFormularioComponent;
+  isAdmin: boolean = false; //
 
   private routesMap = new Map([
+    ['registroadmin','/registroadmin'],
     ['login', '/login'],
     ['inicio de sesión', '/login'],
+    ['inicio', ''],
     ['carrito', '/cart'],
     ['agregar','/agregar'],
     ['informacion','/info'],
-    ['inicio',''],
+    ['mapa del sitio', '../../../assets/img/Mapa del sitio.jpg'],
 
   ]);
-
-  constructor(private productoService: ProductoService,  private router: Router,) { }
+  constructor(private toastr: ToastrService,  private productoService: ProductoService,  private router: Router,  public authService: AuthService,) { }
 
   ngOnInit(): void {
     // Cargar datos del carrito desde el almacenamiento local
@@ -37,9 +43,23 @@ export class CartComponent implements OnInit {
     if (cartData) {
       this.cartItems = JSON.parse(cartData);
     }
-
+    const token = localStorage.getItem('token');
+    this.authService.isAuthenticated = !!token;
+  
     this.updateTotalAmount();
+    this.totalAPagar = this.cartItems.reduce((total, item) => total + item.price, 0);
   }
+
+
+navigateToLogin(): void {
+  this.router.navigate(['/login']);
+}
+logout(): void {
+  this.authService.logout();
+  this.toastr.success('A salido de la sesion!', 'Sesion cerrada!');
+  // Opcionalmente, puedes redirigir a la página de inicio o login después del cierre de sesión
+  this.router.navigate(['/login']);
+}
   updateCartItem(item: CartItem): void {
     // Encuentra el índice del elemento en el carrito
     const index = this.cartItems.findIndex((cartItem) => cartItem.product._id === item.product._id);
@@ -47,8 +67,7 @@ export class CartComponent implements OnInit {
         // Actualiza la cantidad o cualquier otra propiedad del elemento del carrito
         this.cartItems[index].quantity = item.quantity;
         // También puedes realizar otras actualizaciones si es necesario
-        // ...
-
+ 
         // Actualiza el carrito en el servicio (si es necesario)
         this.productoService.updateCart(this.cartItems);
 
@@ -57,14 +76,18 @@ export class CartComponent implements OnInit {
     }
 }
 
-  removeFromCart(item: CartItem): void {
-    // Lógica para eliminar un elemento del carrito
-    const index = this.cartItems.findIndex((cartItem) => cartItem.product._id === item.product._id);
-    if (index !== -1) {
-      this.cartItems.splice(index, 1);
-      this.updateTotalAmount();
-    }
+removeFromCart(item: CartItem): void {
+  // Lógica para eliminar un elemento del carrito
+  const index = this.cartItems.findIndex((cartItem) => cartItem.product._id === item.product._id);
+  if (index !== -1) {
+    this.cartItems.splice(index, 1);
+    this.updateTotalAmount();
+    
+    // Actualizar el almacenamiento local después de eliminar el elemento
+    localStorage.setItem('cart', JSON.stringify(this.cartItems));
   }
+}
+
 
   private updateTotalAmount(): void {
     this.totalAmount = this.cartItems.reduce((total, item) => total + item.price, 0);
@@ -141,5 +164,13 @@ export class CartComponent implements OnInit {
       return nombre.includes(query.toLowerCase());
     });
   }
+
+  abrirModal(): void {
+    if (this.cartItems.length > 0) {
+      this.modalFormularioComponent.openModal(this.cartItems, this.totalAPagar);
+    }
+  }
+
+  
 }
 

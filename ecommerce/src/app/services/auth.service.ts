@@ -14,8 +14,7 @@ import { tap } from 'rxjs/operators';
 export class AuthService {
   private tokenKey = 'token';
   private loginTimeKey = 'loginTime';
-  private sessionDuration =  5 * 60 * 1000;
-  
+  private sessionDuration = 6 * 1000;
   isAuthenticated = false; // Agregar esta propiedad
   private apiUrl = 'http://localhost:4000/api/auth';
 
@@ -40,8 +39,6 @@ export class AuthService {
       );
   }
   
-
-
   logout() {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.loginTimeKey);
@@ -75,8 +72,7 @@ export class AuthService {
       }
     }, 60000); // Verificar cada minuto
   }
-
-  private extendSession() {
+  public extendSession() {
     localStorage.setItem(this.loginTimeKey, Date.now().toString());
     this.toastr.success('Su sesión ha sido extendida.', 'Sesión extendida');
   }
@@ -143,6 +139,12 @@ export class AuthService {
       return rol === 'administrador';
     }
     return false;
+  }
+  
+  enviarPedidoYFormulario(token: string, pedidoDetalles: any): Observable<any> {
+    const url = `${this.apiUrl}/enviar-pedido`;
+    const body = { token, pedidoDetalles };
+    return this.http.post(url, body);
   }
   
 }

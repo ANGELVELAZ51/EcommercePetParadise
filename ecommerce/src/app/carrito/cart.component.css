@@ -96,9 +96,6 @@ header {
   transform: scale(1.2); /* Aumenta el tamaño de la imagen en un 20% */
 }
 
-.header-icons {
-  margin-right: 59px; /* Agrega un margen a la izquierda para mover el icono hacia la derecha */
-}
 
 .header-icons a {
   display: inline-block;
@@ -107,6 +104,8 @@ header {
   color: #000000;
   text-decoration: none;
 }
+
+
 
 .header-icons .icon-container {
   display: flex;

@@ -23,13 +23,19 @@ export class ProductComponent implements OnInit {
   listProductosOriginal: Producto[] = [];
   sugerenciasProductos: Producto[] = [];
   sugerenciasEnTiempoReal: Producto[] = [];
+  isAdmin: boolean = false; // Variable para indicar si el usuario es administrador
+
 
   private routesMap = new Map([
+    ['registroadmin','/registroadmin'],
     ['login', '/login'],
     ['inicio de sesión', '/login'],
+    ['inicio', ''],
     ['carrito', '/cart'],
     ['agregar','/agregar'],
     ['informacion','/info'],
+    ['mapa del sitio', '../../../assets/img/Mapa del sitio.jpg'],
+
   ]);
 
   constructor(

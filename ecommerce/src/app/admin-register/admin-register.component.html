@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+          <div class="logo">
+            <a href="">
+              <div class="icon-container">
+                <img src="../../assets/img/Background (1).png" alt="Inicio Sesion" style="height: 40px;" height="50px">
+              </div>
+            </a>
+          </div>
+          <div class="search-container">
+            <form (ngSubmit)="buscarProductos()" #searchForm="ngForm" class="search-form">
+              <input type="text" name="searchQuery" [(ngModel)]="searchQuery" placeholder="Buscar por nombre o categoría..." class="search-input" (input)="actualizarSugerencias(searchQuery)">
+              <button type="submit" class="search-button">
+                <i class="fas fa-search"></i>
+                <img src="../../assets/img/finding.png" alt="Perrito con lupa" class="search-icon">
+              </button>
+            </form>
+          
+            <div *ngIf="sugerenciasEnTiempoReal.length > 0" class="sugerencias-flotantes">
+              <ul>
+                <li *ngFor="let producto of sugerenciasEnTiempoReal" (click)="navigateToProductDetails(producto.nombre)">
+                  {{ producto.nombre }}
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="sugerenciasProductos.length > 0" class="sugerencias-productos">
+              <h4>Sugerencias:</h4>
+              <ul>
+                <li *ngFor="let producto of sugerenciasProductos" (click)="navigateToProductDetails(producto.nombre)">
+                  {{ producto.nombre }}
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="header-icons">
+            <a href="/login">
+              <div class="icon-container">
+                <img *ngIf="!authService.isAuthenticated" (click)="navigateToLogin()"  src="../../assets/img/dog.png" alt="PetParadise " style="height: 40px;" height="50px">
+                <span *ngIf="!authService.isAuthenticated" (click)="navigateToLogin()" >Login</span>
+              </div>
+            </a>
+            <a *ngIf="authService.isAuthenticated" (click)="logout()">
+              <div class="icon-container">
+                <img src="../../assets/img/good-bye (1).png" alt="PetParadise " style="height: 40px;" height="50px">
+                <span *ngIf="authService.isAuthenticated" (click)="logout()" >Logout</span>
+              </div>
+            </a>        
+            <a href="">
+              <div class="icon-container">
+                <img src="../../assets/img/pet-friendly.png" alt="Inicio" style="height: 40px;" height="50px">
+                <span>Inicio</span>
+              </div>
+            </a>
+            <a href="/cart">
+              <div class="icon-container">
+                <img src="../../assets/img/shopping-bag.png" alt="Carrito de compras" style="height: 40px;" height="50px">
+                <span>Carrito</span>
+              </div>
+            </a>
+            <a *ngIf="authService.isAdmin()" href="/agregar">
+              <div class="icon-container">
+                <button type="button" class="btn btn-primary">Botón de Administrador</button>
+              </div>
+            </a>
+            </div>
+        </div>
+      </header>
+
+  <div class="container">
+    <div class="background-image">
+      <form class="register-form" style="margin-top: 40px;" [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <h2 class="MuiTypography-root MuiTypography-h1 css-1nwzx2u">Registro de usuario administrador</h2>
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" class="form-control" formControlName="nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Correo electrónico:</label>
+          <input type="email" id="email" name="email" class="form-control" formControlName="email" required>
+          <div *ngIf="registroForm.get('email')?.hasError('email')" class="text-danger">El formato del correo electrónico no es válido.</div>
+          <div *ngIf="registroForm.get('email')?.hasError('invalidEmail')" class="text-danger">El formato del correo electrónico no es válido.</div>
+        </div>              
+        <div class="form-group">
+          <label for="password">Contraseña:</label>
+          <input type="password" id="password" name="password" class="form-control" formControlName="password" required>
+          <div *ngIf="registroForm.get('password')?.hasError('missingUppercase')" class="text-danger">La contraseña debe contener al menos una letra mayúscula.</div>
+          <div *ngIf="registroForm.get('password')?.hasError('missingNumber')" class="text-danger">La contraseña debe contener al menos un número.</div>
+          <div *ngIf="registroForm.get('password')?.hasError('minLength')" class="text-danger">La contraseña debe tener al menos 6 caracteres de longitud.</div>
+        </div>
+        <div class="form-group">
+          <label for="confirmarPassword">Confirmar Contraseña:</label>
+          <input type="password" id="confirmarPassword" name="confirmarPassword" class="form-control" formControlName="confirmarPassword" required>
+          <div *ngIf="registroForm.get('confirmarPassword')?.hasError('passwordsNotMatch')" class="text-danger">Las contraseñas no coinciden.</div>
+        </div>
+        <div class="form-group">
+          <label for="rol">Rol:</label>
+          <select id="rol" name="rol" class="form-control" formControlName="rol" required>
+            <option value="" disabled selected>Selecciona un rol</option>
+            <option value="administrador">Administrador</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Registrar</button>
+        <br>
+      </form>
+    </div>
+  </div>
+</body>
+<app-footer></app-footer>
+</html>
