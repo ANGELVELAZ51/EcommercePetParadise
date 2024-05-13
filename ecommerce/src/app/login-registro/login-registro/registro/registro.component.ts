@@ -12,6 +12,7 @@ import { FormControl } from '@angular/forms';
 })
 export class RegistroComponent {
   registroForm: FormGroup;
+  captchaResolved = false;
 
   constructor(
     private http: HttpClient,
@@ -23,12 +24,27 @@ export class RegistroComponent {
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email, this.validateEmailFormat]],
       password: ['', [Validators.required, this.validatePasswordFormat]],
-      confirmarPassword: ['', Validators.required]
-    });
+      confirmarPassword: ['', Validators.required],
+      recaptchaToken: [''] // Inicializar con una cadena vacía
+
+    }
+  );
+    
   }
+  resolvedCaptcha(event: any) {
+    if (event) {
+      // El evento contiene información sobre la resolución del captcha
+      // Por ejemplo, puedes verificar si el captcha se resolvió correctamente
+      this.captchaResolved = true; // Establecer la variable de control como verdadera
+    } else {
+      // El captcha no se resolvió correctamente
+      this.captchaResolved = false; // Establecer la variable de control como falsa o realizar otras acciones necesarias
+    }
+  }
+  
 
   onSubmit() {
-    if (this.registroForm && this.registroForm.valid) {
+    if (this.registroForm && this.registroForm.valid && this.captchaResolved) {
       const passwordControl = this.registroForm.get('password');
       const confirmarPasswordControl = this.registroForm.get('confirmarPassword');
   
@@ -50,6 +66,7 @@ export class RegistroComponent {
       } else {
         this.toastr.error('Las contraseñas no coinciden', 'Error en el registro');
       }
+      
     }
   }
   

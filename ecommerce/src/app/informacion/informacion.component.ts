@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Producto } from '../models/producto';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../services/auth.service';
+import { EventHandlerService } from '../services/event-handler-service.service';
 
 @Component({
   selector: 'app-informacion',
@@ -23,13 +24,14 @@ export class InformacionComponent {
     ['login', '/login'],
     ['inicio de sesión', '/login'],
     ['inicio', ''],
-    ['carrito', '/cart'],
+    ['compras', '/cart'],
     ['agregar','/agregar'],
     ['informacion','/info'],
     ['mapa del sitio', '../../../assets/img/Mapa del sitio.jpg'],
 
   ]);
-  constructor( private router: Router,    private toastr: ToastrService,     public authService: AuthService,
+  constructor( private router: Router,    private toastr: ToastrService,     public authService: AuthService,    private eventHandlerService: EventHandlerService,
+
   ) { }
 
   ngOnInit(): void {
@@ -38,6 +40,18 @@ export class InformacionComponent {
     // Verifica si el usuario ya está autenticado al cargar el componente
   const token = localStorage.getItem('token');
   this.authService.isAuthenticated = !!token;
+  // Suscribirse al evento de advertencia de sesión a punto de caducar
+  this.authService.sesionCaducandoEventObservable.subscribe(() => {
+    console.log('Recibido evento sesionCaducandoEvent');
+
+    // Mostrar la notificación en la consola
+    this.toastr.warning('Su sesión está a punto de caducar. ¿Desea extenderla?', 'Advertencia').onTap.subscribe(() => {
+      console.log('El usuario ha hecho clic en la notificación para extender la sesión.');
+      // Implementa aquí la lógica para extender la sesión
+      this.authService.extendSession();
+    });
+  });
+
 }
 
 // Método para verificar la autenticación

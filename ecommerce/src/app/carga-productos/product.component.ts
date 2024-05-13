@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductoService } from '../services/producto.service';
 import { Producto } from '../models/producto';
 import { CartItem } from '../models/cartItem';
-import { ToastrService } from 'ngx-toastr';
+import { ToastrService, ToastRef } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { AuthService } from '../services/auth.service'; 
@@ -25,13 +25,14 @@ export class ProductComponent implements OnInit {
   sugerenciasEnTiempoReal: Producto[] = [];
   isAdmin: boolean = false; // Variable para indicar si el usuario es administrador
 
+  private toastRef: ToastRef<any> | null = null;
 
   private routesMap = new Map([
     ['registroadmin','/registroadmin'],
     ['login', '/login'],
     ['inicio de sesión', '/login'],
     ['inicio', ''],
-    ['carrito', '/cart'],
+    ['compras', '/cart'],
     ['agregar','/agregar'],
     ['informacion','/info'],
     ['mapa del sitio', '../../../assets/img/Mapa del sitio.jpg'],
@@ -50,11 +51,11 @@ export class ProductComponent implements OnInit {
 
   ngOnInit(): void {
     this.obtenerProductos(this.currentPage, this.itemsPerPage);
-    // this.obtenerProductosUnicos();
       // Verifica si el usuario ya está autenticado al cargar el componente
-    const token = localStorage.getItem('token');
-    this.authService.isAuthenticated = !!token;
-  }
+      const token = localStorage.getItem('token');
+      this.authService.isAuthenticated = !!token;
+}
+
   navigateToLogin(): void {
     this.router.navigate(['/login']);
   }

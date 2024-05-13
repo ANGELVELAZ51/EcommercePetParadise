@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ModalFormularioComponent } from '../modal-formulario/modal-formulario.component';
 import { AuthService } from '../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { EventHandlerService } from '../services/event-handler-service.service';
 
 @Component({
   selector: 'app-cart',
@@ -29,16 +30,18 @@ export class CartComponent implements OnInit {
     ['login', '/login'],
     ['inicio de sesión', '/login'],
     ['inicio', ''],
-    ['carrito', '/cart'],
+    ['compras', '/cart'],
     ['agregar','/agregar'],
     ['informacion','/info'],
     ['mapa del sitio', '../../../assets/img/Mapa del sitio.jpg'],
 
   ]);
-  constructor(private toastr: ToastrService,  private productoService: ProductoService,  private router: Router,  public authService: AuthService,) { }
+  constructor(private toastr: ToastrService,  private productoService: ProductoService,  private router: Router,  public authService: AuthService,   private eventHandlerService: EventHandlerService
+  ) { }
 
   ngOnInit(): void {
     // Cargar datos del carrito desde el almacenamiento local
+    
     const cartData = localStorage.getItem('cart');
     if (cartData) {
       this.cartItems = JSON.parse(cartData);
@@ -48,6 +51,7 @@ export class CartComponent implements OnInit {
   
     this.updateTotalAmount();
     this.totalAPagar = this.cartItems.reduce((total, item) => total + item.price, 0);
+
   }
 
 

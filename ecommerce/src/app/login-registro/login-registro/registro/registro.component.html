@@ -45,9 +45,13 @@
           <div *ngIf="registroForm.get('password')?.hasError('missingNumber')" class="text-danger">La contraseña debe contener al menos un número.</div>
           <div *ngIf="registroForm.get('password')?.hasError('minLength')" class="text-danger">La contraseña debe tener al menos 6 caracteres de longitud.</div>
         </div>
-        
-        <button type="submit" [disabled]="registroForm.invalid" class="btn btn-primary">Registrarse</button>
         <br>
+            <!--formulario.component.html-->
+            <re-captcha [formControlName]="registroForm.get('recaptchaToken')?.value ? 'recaptchaToken' : ''"
+            siteKey="6LcRMtUpAAAAADHGvsxzULe1-gRBMRgwZ3JHs2MD
+            "
+            (resolved)="resolvedCaptcha($event)"></re-captcha>
+            <button style="margin-top: 5px;" type="submit" [disabled]="!registroForm.valid || !captchaResolved">Registrarse</button>
         <div class="form-volver">
           <br>
           <button class="btn btn-secondary" [routerLink]="['/login']">Ya tengo una cuenta</button>

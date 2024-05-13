@@ -7,6 +7,7 @@ import { CartItem } from '../models/cartItem';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { EventHandlerService } from '../services/event-handler-service.service';
 
 
 @Component({
@@ -28,7 +29,7 @@ export class ProductDetailsComponent implements OnInit {
     ['login', '/login'],
     ['inicio de sesión', '/login'],
     ['inicio', ''],
-    ['carrito', '/cart'],
+    ['compras', '/cart'],
     ['agregar','/agregar'],
     ['informacion','/info'],
     ['mapa del sitio', '../../../assets/img/Mapa del sitio.jpg'],
@@ -41,6 +42,7 @@ export class ProductDetailsComponent implements OnInit {
     private toastr: ToastrService,
     private router: Router,
     public authService: AuthService,
+    private eventHandlerService: EventHandlerService,
 
   ) {}
   addToCart(product: Producto): void {
@@ -62,6 +64,7 @@ export class ProductDetailsComponent implements OnInit {
       });
       
     });
+
   }
 
 

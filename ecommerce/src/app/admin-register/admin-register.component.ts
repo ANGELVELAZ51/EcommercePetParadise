@@ -6,6 +6,7 @@ import { ToastrService } from 'ngx-toastr';
 import { FormControl } from '@angular/forms';
 import { AuthService } from '../services/auth.service'; 
 import { Producto } from '../models/producto';
+import { EventHandlerService } from '../services/event-handler-service.service';
 
 @Component({
   selector: 'app-admin-register',
@@ -25,7 +26,7 @@ export class AdminRegisterComponent {
     ['login', '/login'],
     ['inicio de sesión', '/login'],
     ['inicio', ''],
-    ['carrito', '/cart'],
+    ['compras', '/cart'],
     ['agregar','/agregar'],
     ['informacion','/info'],
     ['mapa del sitio', '../../../assets/img/Mapa del sitio.jpg'],
@@ -37,7 +38,9 @@ export class AdminRegisterComponent {
     private formBuilder: FormBuilder,
     private router: Router,
     private toastr: ToastrService,
-    public authService: AuthService 
+    public authService: AuthService,
+    private eventHandlerService: EventHandlerService,
+
   )
    {
     
@@ -52,8 +55,8 @@ export class AdminRegisterComponent {
     // Verifica si el usuario ya está autenticado al cargar el componente
   const token = localStorage.getItem('token');
   this.authService.isAuthenticated = !!token;
-}
 
+}
 navigateToLogin(): void {
   this.router.navigate(['/login']);
 }

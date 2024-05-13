@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { jwtDecode } from 'jwt-decode'
+import { Observable, Subject } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
+import { jwtDecode } from 'jwt-decode';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { tap } from 'rxjs/operators';
-
 
 @Injectable({
   providedIn: 'root'
@@ -14,43 +12,58 @@ import { tap } from 'rxjs/operators';
 export class AuthService {
   private tokenKey = 'token';
   private loginTimeKey = 'loginTime';
-  private sessionDuration = 6 * 1000;
-  isAuthenticated = false; // Agregar esta propiedad
+  private sessionDuration = 1 * 60 * 1000; // 1 minutos en milisegundos
+  isAuthenticated = false;
   private apiUrl = 'http://localhost:4000/api/auth';
+  public sesionCaducandoEvent = new Subject<void>();
+  public logoutEvent = new Subject<void>();
 
-  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService) {
-    // // Verificar la expiración del token cada minuto
-    // setInterval(() => {
-    //   this.checkTokenExpiration();
-    // }, 60000);
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private toastr: ToastrService
+  ) {
+    console.log('AuthService inicializado');
     this.checkSessionTimeout();
   }
 
-
-  login(email: string, password: string): Observable<{ token: string }> {
-    return this.http.post<{ token: string }>('http://localhost:4000/api/auth/login', { email, password })
-      .pipe(
-        tap(response => {
-          this.storeToken(response.token);
-          this.isAuthenticated = true;
-          this.storeSessionInfo(response.token);
-
-        })
-      );
+  // Registro de un nuevo usuario
+  registrarUsuario(nombre: string, email: string, password: string): Observable<any> {
+    const url = `${this.apiUrl}/registro`;
+    const body = { nombre, email, password };
+    return this.http.post(url, body);
   }
-  
-  logout() {
+
+  // Inicio de sesión
+  login(email: string, password: string): Observable<{ token: string }> {
+    const url = `${this.apiUrl}/login`;
+    const body = { email, password };
+    return this.http.post<{ token: string }>(url, body).pipe(
+      tap((response) => {
+        this.storeToken(response.token);
+        this.isAuthenticated = true;
+        this.storeSessionInfo(response.token);
+      })
+    );
+  }
+
+  // Cerrar sesión
+  logout(): void {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.loginTimeKey);
+    this.isAuthenticated = false;
     this.router.navigate(['/login']);
+    this.logoutEvent.next(); // Emitir el evento de cierre de sesión
   }
 
-  private storeSessionInfo(token: string) {
+  // Almacenar información de la sesión
+  private storeSessionInfo(token: string): void {
     localStorage.setItem(this.tokenKey, token);
     localStorage.setItem(this.loginTimeKey, Date.now().toString());
   }
 
-  private checkSessionTimeout() {
+  // Método para verificar y manejar la expiración de la sesión
+  private checkSessionTimeout(): void {
     setInterval(() => {
       const loginTime = localStorage.getItem(this.loginTimeKey);
       if (loginTime) {
@@ -58,25 +71,21 @@ export class AuthService {
         if (elapsedTime >= this.sessionDuration) {
           this.logout();
           this.toastr.info('Su sesión ha caducado automáticamente.', 'Sesión expirada');
-        } else if (elapsedTime >= this.sessionDuration * 0.8) {
-          this.toastr.warning('Su sesión está a punto de caducar. ¿Desea extenderla?', 'Advertencia', {
-            timeOut: 0, // No ocultar automáticamente el mensaje
-            extendedTimeOut: 0, // No ocultar automáticamente el mensaje
-            closeButton: true, // Mostrar el botón de cierre en el mensaje
-            tapToDismiss: false, // No permitir que el usuario haga clic fuera del mensaje para cerrarlo
-            disableTimeOut: true // Deshabilitar el tiempo de espera automático para el cierre del mensaje
-          }).onTap.subscribe(() => {
-            this.extendSession();
-          });
+        } else if (elapsedTime >= this.sessionDuration - (this.sessionDuration * 0.8)) {
+          this.sesionCaducandoEvent.next();
+          console.log('Emitiendo evento sesionCaducandoEvent desde el servicioo');
         }
       }
-    }, 60000); // Verificar cada minuto
+    }, 58000); // Verificar cada minuto
   }
-  public extendSession() {
+
+  // Extender la sesión
+  public extendSession(): void {
     localStorage.setItem(this.loginTimeKey, Date.now().toString());
     this.toastr.success('Su sesión ha sido extendida.', 'Sesión extendida');
   }
-  
+
+  // Obtener el rol del usuario autenticado
   getUsuarioRol(): string | null {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -86,51 +95,40 @@ export class AuthService {
     return decodedToken.usuario.rol;
   }
 
-  
-  // getTokenExpiration(): Date | null {
-  //   const token = localStorage.getItem('token');
-  //   if (!token) {
-  //     return null;
-  //   }
-
-  //   const decodedToken: any = jwtDecode(token);
-  //   const expirationDate = new Date(decodedToken.exp * 1000);
-  //   return expirationDate;
-  // }
-
-  // private checkTokenExpiration(): void {
-  //   const expirationDate = this.getTokenExpiration();
-  //   if (expirationDate && new Date() > expirationDate) {
-  //     // El token ha expirado
-  //     this.logout();
-  //     this.toastr.info('Su sesión ha caducado. Por favor, inicie sesión nuevamente.', 'Sesión expirada');
-  //     this.router.navigate(['/login']);
-  //     // Redirigir al usuario a la página de inicio de sesión
-  //   }
-  // }
+  // Validar token de recuperación de contraseña
   validarToken(token: string): Observable<any> {
-    return this.http.post('http://localhost:4000/api/auth/validate-token', { token });
+    const url = `${this.apiUrl}/validate-token`;
+    const body = { token };
+    return this.http.post(url, body);
   }
 
-  validateToken(token: string): Observable<{ isValid: boolean, rol: string }> {
+  // Validar token de inicio de sesión
+  validateToken(token: string): Observable<{ isValid: boolean; rol: string }> {
     const url = `${this.apiUrl}/validate-token-login`;
-    return this.http.post<{ isValid: boolean, rol: string }>(url, { token }).pipe(
-      tap(response => console.log('Respuesta validateToken:', response))
+    const body = { token };
+    return this.http.post<{ isValid: boolean; rol: string }>(url, body).pipe(
+      tap((response) => console.log('Respuesta validateToken:', response))
     );
   }
-  
+
+  // Enviar token por correo electrónico
   sendTokenToEmail(email: string, token: string): Observable<any> {
     const url = `${this.apiUrl}/send-token-email`;
     const body = { email, token };
     return this.http.post(url, body);
   }
-//obtener el token del usuario autenticado
+
+  // Obtener el token del usuario autenticado
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
   }
+
+  // Almacenar el token del usuario autenticado
   storeToken(token: string): void {
     localStorage.setItem(this.tokenKey, token);
   }
+
+  // Verificar si el usuario autenticado es administrador
   isAdmin(): boolean {
     const token = this.getToken();
     if (token) {
@@ -140,11 +138,16 @@ export class AuthService {
     }
     return false;
   }
-  
+
+  // Enviar pedido y formulario (si es necesario)
   enviarPedidoYFormulario(token: string, pedidoDetalles: any): Observable<any> {
     const url = `${this.apiUrl}/enviar-pedido`;
     const body = { token, pedidoDetalles };
     return this.http.post(url, body);
   }
-  
+
+  // Método getter para obtener el observable del evento sesionCaducandoEvent
+  get sesionCaducandoEventObservable(): Observable<void> {
+    return this.sesionCaducandoEvent.asObservable();
+  }
 }

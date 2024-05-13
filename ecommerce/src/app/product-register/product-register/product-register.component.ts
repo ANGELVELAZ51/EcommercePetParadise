@@ -4,6 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../services/auth.service'; 
 import { Router } from '@angular/router';
 import { Producto } from '../../models/producto';
+import { EventHandlerService } from 'src/app/services/event-handler-service.service';
 
 
 
@@ -29,7 +30,7 @@ export class ProductRegisterComponent {
     ['login', '/login'],
     ['inicio de sesión', '/login'],
     ['inicio', ''],
-    ['carrito', '/cart'],
+    ['compras', '/cart'],
     ['agregar','/agregar'],
     ['informacion','/info'],
     ['mapa del sitio', '../../../assets/img/Mapa del sitio.jpg'],
@@ -39,14 +40,17 @@ export class ProductRegisterComponent {
     private http: HttpClient,
     private toastr: ToastrService,
     private router: Router,
-    public authService: AuthService 
+    public authService: AuthService,
+    private eventHandlerService: EventHandlerService,
+
   ) {}
   ngOnInit(): void {
       // Verifica si el usuario ya está autenticado al cargar el componente
     const token = localStorage.getItem('token');
     this.authService.isAuthenticated = !!token;
-  }
 
+
+  }
   logout(): void {
     this.authService.logout();
     this.toastr.success('A salido de la sesion!', 'Sesion cerrada!');

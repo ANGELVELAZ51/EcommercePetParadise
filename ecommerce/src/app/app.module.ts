@@ -26,6 +26,7 @@ import { ValidateTokenComponent } from './validate-token/validate-token.componen
 import { ValidateTokenLoginComponent } from './validate-token-login/validate-token-login.component';
 import { ModalFormularioComponent } from './modal-formulario/modal-formulario.component';
 import { AdminRegisterComponent } from './admin-register/admin-register.component';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 
 @NgModule({
@@ -47,8 +48,7 @@ import { AdminRegisterComponent } from './admin-register/admin-register.componen
     ValidateTokenComponent,
     ValidateTokenLoginComponent,
     ModalFormularioComponent,
-    AdminRegisterComponent
-
+    AdminRegisterComponent,
   ],
   imports: [
     BrowserModule,
@@ -61,6 +61,8 @@ import { AdminRegisterComponent } from './admin-register/admin-register.componen
     ToastrModule.forRoot({positionClass: 'toast-bottom-center',}),
     BrowserAnimationsModule, 
     ToastrModule.forRoot(),
+    RecaptchaModule,
+
   ],
   providers: [ProductoService,  AuthService,     ],
   bootstrap: [AppComponent]
