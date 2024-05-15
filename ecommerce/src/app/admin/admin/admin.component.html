@@ -24,7 +24,7 @@
                           <td>{{ producto.talla }}</td>
                           <td>{{ producto.categoria }}</td>
                           <td>
-                              <i [routerLink]="['/editar-productos', producto._id]" class="far fa-pen-to-square"></i>
+                              <i [routerLink]="['/editar', producto._id]" class="far fa-pen-to-square"></i>
                               <i (click)="eliminarProducto(producto._id)" class="fa-regular fa-trash-can text-danger"></i>
                           </td>
                         </tr>

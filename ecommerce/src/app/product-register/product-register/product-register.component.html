@@ -8,48 +8,21 @@
     <div class="logo">
       <a href="">
         <div class="icon-container">
-          <img src="../../assets/img/Background (1).png" alt="PetParadise" style="height: 40px;" height="50px">
+          <img src="../../assets/img/Background (1).png" alt="Inicio Sesion" style="height: 40px" height="50px"/>
         </div>
       </a>
-    </div>
-    <div class="search-container">
-      <form (ngSubmit)="buscarProductos()" #searchForm="ngForm" class="search-form" >
-        <input type="text" name="searchQuery" [(ngModel)]="searchQuery" placeholder="¿A donde quieres ir?" class="search-input" (input)="actualizarSugerencias(searchQuery)" style="height: 50px;">
-        <button type="submit" class="search-button">
-          <i class="fas fa-search"></i>
-          <img src="../../assets/img/finding.png" alt="Perrito con lupa" class="search-icon">
-        </button>
-      </form>
-    
-      <div *ngIf="sugerenciasEnTiempoReal.length > 0" class="sugerencias-flotantes">
-        <ul>
-          <li *ngFor="let producto of sugerenciasEnTiempoReal" (click)="navigateToProductDetails(producto.nombre)">
-            {{ producto.nombre }}
-          </li>
-        </ul>
-      </div>
-    
-      <!-- Sugerencias anteriores -->
-      <div *ngIf="sugerenciasProductos.length > 0" class="sugerencias-productos">
-        <h4>Sugerencias:</h4>
-        <ul>
-          <li *ngFor="let producto of sugerenciasProductos" (click)="navigateToProductDetails(producto.nombre)">
-            {{ producto.nombre }}
-          </li>
-        </ul>
-      </div>
     </div>
     <div class="header-icons">
+      <a *ngIf="authService.isAuthenticated" (click)="logout()">
+        <div class="icon-container">
+          <img src="../../assets/img/good-bye (1).png" alt="PetParadise " style="height: 40px;" height="50px">
+          <span *ngIf="authService.isAuthenticated" (click)="logout()" >Logout</span>
+        </div>
+      </a> 
       <a href="">
         <div class="icon-container">
-          <img src="../../assets/img/pet-friendly.png" alt="Inicio" style="height: 40px;" height="50px">
+          <img src="../../assets/img/pet-friendly.png" alt="Inicio" style="height: 40px" height="50px"/>
           <span>Inicio</span>
-        </div>
-      </a>
-      <a href="/cart">
-        <div class="icon-container">
-          <img src="../../assets/img/shopping-bag.png" alt="Carrito de compras" style="height: 40px;" height="50px">
-          <span>Compras</span>
         </div>
       </a>
     </div>
@@ -57,18 +30,21 @@
 </header>
 <body>
   <div class="product-form">
+    <div class="">
+      <button routerLink="/registroP" style="float: right;">Ver lista de productos</button>
+    </div>
     <h1>Registrar un nuevo producto</h1>
     <div class="form">
       <form (submit)="registrarProducto()">
-        <label for="nombre">Nombre:</label>
+        <label for="nombre">Nombre del producto:</label>
         <input type="text" id="nombre" name="nombre" [(ngModel)]="nombre" required>
-
+    
         <label for="precio">Precio:</label>
         <input type="text" id="precio" name="precio" [(ngModel)]="precio" required>
-
+    
         <label for="detalles">Detalles:</label>
         <textarea id="detalles" name="detalles" [(ngModel)]="detalles" required></textarea>
-
+    
         <label for="talla">Talla:</label>
         <select id="talla" name="talla" [(ngModel)]="talla" required>
           <option value="">Selecciona una talla</option>
@@ -76,27 +52,53 @@
           <option value="Mediano">Mediano</option>
           <option value="Grande">Grande</option>
         </select>
-
+    
         <label for="categoria">Categoría:</label>
-        <input type="text" id="categoria" name="categoria" [(ngModel)]="categoria" required>
-
+        <select id="categoria" name="categoria" [(ngModel)]="categoria" required>
+          <option value="">Selecciona una Categoría</option>
+          <option value="Perro">Perro</option>
+          <option value="Gato">Gato</option>
+        </select>
+    
         <div>
           <label for="imagen">Seleccionar imagen:</label>
-          <input type="file" id="imagen" name="imagen">
+          <input type="file" id="imagen" name="imagen" (change)="onFileSelected($event)" accept="image/*" required>
         </div>
-<!-- 
-        <div>
-          <label for="imagen">Seleccionar imagen:</label>
-          <input type="file" id="imagen" name="imagen" (change)="onFileSelected($event)" accept="image/*">
-          
-        </div> -->
+    
         <br />
         <br />
         <br />
+        <!-- <button routerLink="/registroP" style="float: right;">Volver</button> -->
         <button type="submit" style="align-content: center" >Guardar</button>
       </form>
     </div>
+    
   </div>
+    <!-- Formulario de registro
+    <div *ngIf="!productoEditado">
+      <h1>Registrar un nuevo producto</h1>-->
+      <!-- Agrega aquí tu formulario de registro
+    </div>
+
+      Formulario de edición 
+      <div *ngIf="productoEditado">
+        <h1>Editar Producto</h1>
+        <form (ngSubmit)="guardarCambios()">
+           Campos de edición del producto 
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" [(ngModel)]="productoEditado.nombre" required>
+
+          <label for="precio">Precio:</label>
+          <input type="number" id="precio" name="precio" [(ngModel)]="productoEditado.precio" required>
+
+         Agrega más campos según los detalles del producto que desees editar 
+
+          <button type="submit">Guardar Cambios</button>
+          <button type="button" (click)="cancelarEdicion()">Cancelar</button>
+        </form>
+      </div>  -->
+
+  
 </body>
 <app-footer></app-footer>
 </html>
