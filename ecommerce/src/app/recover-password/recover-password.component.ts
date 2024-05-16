@@ -33,7 +33,7 @@ export class RecoverPasswordComponent {
     if (this.recoverForm.valid) {
       const { email } = this.recoverForm.value;
       this.http
-        .post('http://localhost:4000/api/auth/recover-password', { email })
+        .post('https://back-end-ayfu.onrender.com/api/auth/recover-password', { email })
         .subscribe(
           (response) => {
             // Manejar la respuesta exitosa

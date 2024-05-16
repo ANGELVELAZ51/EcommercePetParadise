@@ -71,7 +71,7 @@ exports.registrarProducto = async (req, res) => {
     if (!req.body) { // TODO: Revisar la validación; siempre regresa false
       return res.status(400).json({ mensaje: 'No se proporcionaron datos en el cuerpo de la solicitud' });
     }
-    const { nombre, precio, detalles, talla, categoria } = req.body;
+    const { nombre, precio, detalles, categoria } = req.body;
     console.info('req.body: ', req.body)
     console.info('req.file: ',req.file)
     
@@ -81,31 +81,16 @@ exports.registrarProducto = async (req, res) => {
     }
     
     const imagen = req.file;
-    // const uploadPath = path.join(__dirname, '../upload', imagen.name);
-    // console.info(uploadPath)
     console.info(imagen)
-    // Mover la imagen al directorio de uploads
-    // await imagen.mv(imagen.path);
-    
-    const nuevoProducto = new Producto({ nombre, precio, detalles, talla, categoria, imagen });  
+    const rutaImagen = `http://localhost:4000/upload/${req.file.filename}`;
+    const nuevoProducto = new Producto({ nombre, precio, detalles, categoria, imagen: rutaImagen });
     await nuevoProducto.save();
-
-    try {
-      setTimeout(() => {
-        fs.unlinkSync(`${req.file.path}`);
-        console.log('File deleted!');
-      }, 5000)
-    } catch (err) {
-      // Handle specific error if any
-      console.error(err.message);
-    }
   
     res.status(201).json({ mensaje: 'Producto registrado exitosamente', producto: nuevoProducto });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error interno del servidor', error: error.message });
   }
 };
-
 
 
 // Controlador para eliminar un producto por su ID
@@ -142,7 +127,7 @@ exports.actualizarProducto = async (req, res) => {
     producto.precio = req.body.precio || producto.precio;
     producto.detalles = req.body.detalles || producto.detalles;
     producto.categoria = req.body.categoria || producto.categoria;
-    producto.talla = req.body.talla || producto.talla;
+    // producto.talla = req.body.talla || producto.talla;
 
     const productoActualizado = await producto.save();
     res.json(productoActualizado);

@@ -72,7 +72,7 @@ export class ResetPasswordComponent {
       const { password } = this.resetForm.value;
       const resetData = { token: this.resetToken, password, email: this.email };
       this.http
-        .post('http://localhost:4000/api/auth/reset-password', resetData)
+        .post('https://back-end-ayfu.onrender.com/api/auth/reset-password', resetData)
         .subscribe(
           (response) => {
             // Manejar la respuesta exitosa

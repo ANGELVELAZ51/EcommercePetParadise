@@ -30,13 +30,13 @@ registrarProducto(): void {
   formData.append('nombre', this.nombre);
   formData.append('precio', this.precio.toString());
   formData.append('detalles', this.detalles);
-  formData.append('talla', this.talla);
+  // formData.append('talla', this.talla);
   formData.append('categoria', this.categoria);
   if (this.imagen) {
     formData.append('imagen', this.imagen, this.imagen.name);
   }
   console.info(formData)
-  this.http.post<any>('http://localhost:4000/api/productos', formData)
+  this.http.post<any>('https://back-end-ayfu.onrender.com/api/productos', formData)
     .subscribe(
       (response) => {
         console.log('Producto registrado exitosamente:', response);
@@ -52,9 +52,6 @@ registrarProducto(): void {
 }
 
 onFileSelected(event: any): void {
-  // if (event.target.files.length > 0) {
-  //   this.imagen = event.target.files[0];
-  // }
   [ this.imagen ] = event.target.files
   console.info(this.imagen)
 }
@@ -63,7 +60,7 @@ limpiarCampos(): void {
   this.nombre = '';
   this.precio = 0;
   this.detalles = '';
-  this.talla = '';
+  // this.talla = '';
   this.categoria = '';
   this.imagen = null;
 }
@@ -77,18 +74,23 @@ limpiarCampos(): void {
   itemsPerPage: number = 20;
   searchQuery: string = '';
   categoriasUnicas: string[] = [];
-  tallasUnicas: string[] = [];
+  // tallasUnicas: string[] = [];
   listProductosOriginal: Producto[] = [];
   sugerenciasProductos: Producto[] = [];
   sugerenciasEnTiempoReal: Producto[] = [];
 
   private routesMap = new Map([
+    ['registroadmin','/registroadmin'],
     ['login', '/login'],
     ['inicio de sesión', '/login'],
-    ['carrito', '/cart'],
+    ['inicio', ''],
+    ['compras', '/cart'],
     ['agregar','/agregar'],
     ['informacion','/info'],
+    ['mapa del sitio', '../../../assets/img/Mapa del sitio.jpg'],
+
   ]);
+  
   productoForm: any;
   titulo!: string;  id: null | undefined;
 
@@ -103,15 +105,14 @@ limpiarCampos(): void {
   ) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id') || '';
-    console.info(id);
+    console.info(this.route.snapshot.paramMap.get('id'))
 
     // this.route.snapshot.queryParamMap.forEach(console.info)
     // console.info('Parametros: ', this.route.queryParams.)
     this.obtenerProductos(this.currentPage, this.itemsPerPage);
-    this.editarProducto(id);
+    this.editarProducto(this.route.snapshot.paramMap.get('id')||'');
     // this.obtenerProductosUnicos();
-    // Verifica si el usuario ya está autenticado al cargar el componente
+      // Verifica si el usuario ya está autentiid?: stringid: stringcado al cargar el componente
     const token = localStorage.getItem('token');
     this.authService.isAuthenticated = !!token;
   }
@@ -159,25 +160,6 @@ limpiarCampos(): void {
     return Array.from(categoriasSet);
   }
 
-  // obtenerProductosUnicos(): void {
-  //   if (this.listProductos && this.listProductos.length > 0) {
-  //     const tallasSet = new Set<number>();
-
-  //     this.listProductos.forEach((producto) => {
-  //       if (producto.tallas) {
-  //         producto.tallas.forEach((talla) => {
-  //           tallasSet.add(talla);
-  //         });
-  //       }
-  //     });
-  //     this.tallasUnicas = Array.from(tallasSet).map((talla) =>
-  //       talla.toString()
-  //     );
-  //   } else {
-  //     this.tallasUnicas = [];
-  //   }
-  // }
-
   changePage(page: number): void {
     this.obtenerProductos(page, this.itemsPerPage);
   }
@@ -191,14 +173,6 @@ limpiarCampos(): void {
       (producto) => producto.categoria === categoria
     );
   }
-  // filtrarPorTalla(talla: string): void {
-  //   // Restablecer los filtros previos
-
-  //   // Filtrar los productos que contienen la talla seleccionada en su lista de tallas
-  //   this.listProductos = this.listProductos.filter((producto) => {
-  //     return producto.tallas && producto.tallas.includes(parseInt(talla));
-  //   });
-  // }
   buscarProductos(): void {
     const query = this.searchQuery.toLowerCase().trim();
     this.sugerenciasProductos = []; // Reiniciar las sugerencias
@@ -271,21 +245,16 @@ limpiarCampos(): void {
 productoEditado: Producto | null = null;
 
   editarProducto(idProducto: string): void {
-    // this.productoEditado = { ...producto }; // Crear una copia del producto para no modificar directamente el objeto original
-
-    // Suponiendo que tienes un servicio para obtener los detalles del producto por su ID
-    // if (this.productoEditado && this.productoEditado._id) {
       this._productoService
         .obtenerProducto(idProducto)
         .subscribe(
           (productoObtenido) => {
             console.info(productoObtenido) // TODO: Asignar valor de productoObtenido a los [(ngModel)]
-            // Asignar los detalles obtenidos del producto al producto editado
             if (this.productoEditado) {
               this.productoEditado.nombre = productoObtenido.nombre;
               this.productoEditado.precio = productoObtenido.precio;
               this.productoEditado.detalles = productoObtenido.detalles;
-              this.productoEditado.talla = productoObtenido.talla;
+              // this.productoEditado.talla = productoObtenido.talla;
               this.productoEditado.categoria = productoObtenido.categoria;
             }
           },
@@ -293,7 +262,6 @@ productoEditado: Producto | null = null;
             console.error('Error al obtener los detalles del producto:', error);
           }
         );
-    // }
   }
 
 cancelarEdicion() {

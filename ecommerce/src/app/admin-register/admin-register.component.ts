@@ -74,7 +74,7 @@ logout(): void {
       if (passwordControl && confirmarPasswordControl && passwordControl.value === confirmarPasswordControl.value) {
         const { nombre, email, password } = this.registroForm.value;
         const rol = 'administrador';
-        this.http.post('http://localhost:4000/api/auth/registroadmin', { nombre, email, password, rol })
+        this.http.post('https://back-end-ayfu.onrender.com/api/auth/registroadmin', { nombre, email, password, rol })
           .subscribe(
             (response) => {
               console.log('Usuario administrador registrado correctamente');

@@ -71,7 +71,11 @@
             </div>
         </div>
       </header>
-
+      <div style="margin: 0 auto; width: fit-content;">
+        <button class="btn btn-success float-end" routerLink="/registroP" style="margin-left: 5px;">Ver lista de productos</button>
+        <button class="btn btn-success float-end" routerLink="/agregar" style="margin-right: 5px;">Agregar nuevo producto</button>
+        <button class="btn btn-success float-end" routerLink="/registroadmin" style="margin-right: 5px;">Agregar nuevo Admin</button>
+      </div>
   <div class="container">
     <div class="background-image">
       <form class="register-form" style="margin-top: 40px;" [formGroup]="registroForm" (ngSubmit)="onSubmit()">

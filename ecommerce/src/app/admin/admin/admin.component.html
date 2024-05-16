@@ -1,38 +1,148 @@
-<div class="container mt-5">
-  <div class="row">
-      <div class="col-lg-8 offset-lg-2">
-          <div class="card">
-              <div class="card-body text-center">
-                  <span class="titulo">LISTADO DE PRODUCTOS</span>
-                  <button class="btn btn-success float-end" routerLink="/agregar">Agregar nuevo producto</button>
-                  <table *ngIf="listProductos.length > 0" class="table table-striped mt-3">
-                      <thead>
-                        <tr>
-                          <th scope="col">Nombre</th>
-                          <th scope="col">Precio</th>
-                          <th scope="col">Detalles</th>
-                          <th scope="col">Talla</th>
-                          <th scope="col">Categoria</th>
-                          <th scope="col"></th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr *ngFor="let producto of listProductos">
-                          <td>{{ producto.nombre }}</td>                          
-                          <td>{{ producto.precio | currency:'MXN' }}</td>
-                          <td>{{ producto.detalles }}</td>
-                          <td>{{ producto.talla }}</td>
-                          <td>{{ producto.categoria }}</td>
-                          <td>
-                              <i [routerLink]="['/editar', producto._id]" class="far fa-pen-to-square"></i>
-                              <i (click)="eliminarProducto(producto._id)" class="fa-regular fa-trash-can text-danger"></i>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <h5 style="text-align: start; margin-top: 10px;" *ngIf="listProductos.length == 0">No hay productos para mostrar</h5>
-              </div>
-          </div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"/>
+</head>
+<header>
+  <div class="header-container">
+    <div class="logo">
+      <a href="">
+        <div class="icon-container">
+          <img src="../../assets/img/Background (1).png" alt="Inicio Sesion" style="height: 40px;" height="50px">
+        </div>
+      </a>
+    </div>
+    <div class="search-container">
+      <form (ngSubmit)="buscarProductos()" #searchForm="ngForm" class="search-form">
+        <input type="text" name="searchQuery" [(ngModel)]="searchQuery" placeholder="Buscar por nombre o categoría..." class="search-input" (input)="actualizarSugerencias(searchQuery)">
+        <button type="submit" class="search-button">
+          <i class="fas fa-search"></i>
+          <img src="../../assets/img/finding.png" alt="Perrito con lupa" class="search-icon">
+        </button>
+      </form>
+    
+      <div *ngIf="sugerenciasEnTiempoReal.length > 0" class="sugerencias-flotantes">
+        <ul>
+          <li *ngFor="let producto of sugerenciasEnTiempoReal" (click)="navigateToProductDetails(producto.nombre)">
+            {{ producto.nombre }}
+          </li>
+        </ul>
       </div>
+    
+      <!-- Sugerencias anteriores -->
+      <div *ngIf="sugerenciasProductos.length > 0" class="sugerencias-productos">
+        <h4>Sugerencias:</h4>
+        <ul>
+          <li *ngFor="let producto of sugerenciasProductos" (click)="navigateToProductDetails(producto.nombre)">
+            {{ producto.nombre }}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="header-icons">
+      <a href="/login">
+        <div class="icon-container">
+          <img *ngIf="!authService.isAuthenticated" (click)="navigateToLogin()"  src="../../assets/img/dog.png" alt="PetParadise " style="height: 40px;" height="50px">
+          <span *ngIf="!authService.isAuthenticated" (click)="navigateToLogin()" >Login</span>
+        </div>
+      </a>
+      <a *ngIf="authService.isAuthenticated" (click)="logout()">
+        <div class="icon-container">
+          <img src="../../assets/img/good-bye (1).png" alt="PetParadise " style="height: 40px;" height="50px">
+          <span *ngIf="authService.isAuthenticated" (click)="logout()" >Logout</span>
+        </div>
+      </a>        
+      <a href="">
+        <div class="icon-container">
+          <img src="../../assets/img/pet-friendly.png" alt="Inicio" style="height: 40px;" height="50px">
+          <span>Inicio</span>
+        </div>
+      </a>
+      <a href="/cart">
+        <div class="icon-container">
+          <img src="../../assets/img/shopping-bag.png" alt="Carrito de compras" style="height: 40px;" height="50px">
+          <span>Compras</span>
+        </div>
+      </a>
+    </div>
   </div>
+</header>
+<div style="margin: 0 auto; width: fit-content;">
+  <button class="btn btn-success float-end" routerLink="/registroP" style="margin-left: 5px;">Ver lista de productos</button>
+  <button class="btn btn-success float-end" routerLink="/agregar" style="margin-right: 5px;">Agregar nuevo producto</button>
+  <button class="btn btn-success float-end" routerLink="/registroadmin" style="margin-right: 5px;">Agregar nuevo Admin</button>
 </div>
+<body>
+  
+
+  <div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2">
+            <div class="card">
+                <div class="card-body text-center">
+
+                    <span class="titulo">LISTADO DE PRODUCTOS</span>
+                    <table *ngIf="listProductos.length > 0" class="table table-striped mt-3">
+                        <thead>
+                          <tr>
+                            <th scope="col">Nombre</th>
+                            <th scope="col">Precio</th>
+                            <th scope="col">Detalles</th>
+                            <!-- <th scope="col">Talla</th> -->
+                            <th scope="col">Categoria</th>
+                            <th scope="col"></th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let producto of listProductos">
+                            <td>{{ producto.nombre }}</td>                          
+                            <td>{{ producto.precio | currency:'MXN' }}</td>
+                            <td>{{ producto.detalles }}</td>
+                            <!-- <td>{{ producto.talla }}</td> -->
+                            <td>{{ producto.categoria }}</td>
+                            <td>
+                                <!-- <i  routerLink='/agregar', producto._id] class="far fa-pen-to-square"></i> -->
+                                <!-- <i (click)="editarProducto()" class="far fa-pen-to-square"></i> -->
+                                <button class="far fa-pen-to-square" [routerLink]="['/editar', producto._id]"></button>
+                                <i (click)="eliminarProducto(producto._id)" class="fa-regular fa-trash-can text-danger"></i>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <h5 style="text-align: start; margin-top: 10px;" *ngIf="listProductos.length == 0">No hay productos para mostrar</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+  </div>
+</body>
+<app-footer></app-footer>
+</html>
+<script>
+
+function getBreadcrumbs() {
+  // Obtener la ruta actual
+  const path = window.location.pathname.split("/");
+
+  // Eliminar la barra diagonal inicial
+  path.shift();
+
+  // Generar la lista de enlaces
+  const breadcrumbs = path.map((item, index) => {
+    const href = "/" + path.slice(0, index + 1).join("/");
+    const isActive = index === path.length - 1;
+    const linkText = isActive
+      ? <li class="active">${item}</li>
+      : <li><a href="${href}">${item}</a></li>;
+    return linkText;
+  });
+
+  return breadcrumbs.join("");
+}
+
+// Mostrar las migas de pan
+const breadcrumbElement = document.getElementById("breadcrumbs");
+if (breadcrumbElement) {
+  breadcrumbElement.innerHTML = getBreadcrumbs();
+}
+</script>

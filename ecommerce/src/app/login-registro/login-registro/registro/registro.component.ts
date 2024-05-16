@@ -51,7 +51,7 @@ export class RegistroComponent {
       if (passwordControl && confirmarPasswordControl && passwordControl.value === confirmarPasswordControl.value) {
         const { nombre, email, password } = this.registroForm.value;
         
-        this.http.post('http://localhost:4000/api/auth/registro', { nombre, email, password })
+        this.http.post('https://back-end-ayfu.onrender.com/api/auth/registro', { nombre, email, password })
           .subscribe(
             (response) => {
               console.log('Usuario registrado correctamente');
