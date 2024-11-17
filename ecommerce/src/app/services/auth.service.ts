@@ -14,7 +14,7 @@ export class AuthService {
   private loginTimeKey = 'loginTime';
   private sessionDuration = 10 * 60 * 1000; // 1 minutos en milisegundos
   isAuthenticated = false;
-  private apiUrl = 'https://back-end-ayfu.onrender.com/api/auth';
+  private apiUrl = 'http://localhost:4000/api/auth';
   public sesionCaducandoEvent = new Subject<void>();
   public logoutEvent = new Subject<void>();
 

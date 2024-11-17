@@ -1,0 +1,48 @@
+services:
+  # Servicio de MongoDB
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - app-network
+
+  # Servicio del Backend
+  backend:
+    build:
+      context: ./back-end
+      dockerfile: Dockerfile
+    container_name: backend
+    ports:
+      - "4000:4000"
+    environment:
+      - NODE_ENV=production
+      - DB_MONGO=mongodb://mongodb:27017/Productos
+      - JWT_SECRET=$2b$10$rWfkSPn8J.IUnyJD0Zcj2e
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+  # Servicio del Frontend
+  frontend:
+    build:
+      context: ./ecommerce
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:

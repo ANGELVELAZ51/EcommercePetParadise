@@ -36,7 +36,7 @@ registrarProducto(): void {
     formData.append('imagen', this.imagen, this.imagen.name);
   }
   console.info(formData)
-  this.http.post<any>('https://back-end-ayfu.onrender.com/api/productos', formData)
+  this.http.post<any>('http://localhost:4000/api/productos', formData)
     .subscribe(
       (response) => {
         console.log('Producto registrado exitosamente:', response);

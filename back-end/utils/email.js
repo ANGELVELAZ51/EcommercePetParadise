@@ -1,12 +1,12 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
 
 // Configurar el transporte de correo electrónico
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  service: "gmail",
   auth: {
-    user: 'angelvelazsalazar@gmail.com',
-    pass: 'yajb jsqz apnr vknn'
-  }
+    user: "angelvelazsalazar@gmail.com",
+    pass: "yajb jsqz apnr vknn",
+  },
 });
 
 // Función para enviar el token por correo electrónico
@@ -70,9 +70,9 @@ const transporter = nodemailer.createTransport({
 const enviarCorreoRegistro = async (email, token) => {
   try {
     const mailOptions = {
-      from: 'Pet Paradise <angelvelazsalazar@gmail.com>',
+      from: "Pet Paradise <angelvelazsalazar@gmail.com>",
       to: email,
-      subject: 'Bienvenido a Pet Paradise',
+      subject: "Bienvenido a Pet Paradise",
       html: `
         <!DOCTYPE html>
         <html>
@@ -103,14 +103,17 @@ const enviarCorreoRegistro = async (email, token) => {
           </div>
         </body>
         </html>
-      `
+      `,
     };
 
     // Enviar el correo electrónico
     await transporter.sendMail(mailOptions);
-    console.log('Correo electrónico de registro enviado correctamente a:', email);
+    console.log(
+      "Correo electrónico de registro enviado correctamente a:",
+      email
+    );
   } catch (error) {
-    console.error('Error al enviar el correo electrónico de registro:', error);
+    console.error("Error al enviar el correo electrónico de registro:", error);
     // Manejo de errores
   }
 };
@@ -118,15 +121,14 @@ const enviarCorreoRegistro = async (email, token) => {
 //Función para enviar correo de inicio de sesión
 const enviarCorreoInicioSesion = async (email, token) => {
   try {
-
     if (token === undefined) {
-      console.error('Error: el token es undefined');
+      console.error("Error: el token es undefined");
       return;
     }
     const mailOptions = {
-      from: 'Pet Paradise <angelvelazsalazar@gmail.com>',
+      from: "Pet Paradise <angelvelazsalazar@gmail.com>",
       to: email,
-      subject: 'Inicio de sesión en Pet Paradise',
+      subject: "Inicio de sesión en Pet Paradise",
       html: `
         <!DOCTYPE html>
         <html>
@@ -160,14 +162,20 @@ const enviarCorreoInicioSesion = async (email, token) => {
           </div>
         </body>
         </html>
-      `
+      `,
     };
 
     // Enviar el correo electrónico
     await transporter.sendMail(mailOptions);
-    console.log('Correo electrónico de inicio de sesión enviado correctamente a:', email);
+    console.log(
+      "Correo electrónico de inicio de sesión enviado correctamente a:",
+      email
+    );
   } catch (error) {
-    console.error('Error al enviar el correo electrónico de inicio de sesión:', error);
+    console.error(
+      "Error al enviar el correo electrónico de inicio de sesión:",
+      error
+    );
     // Manejo de errores
   }
 };
@@ -175,9 +183,9 @@ const enviarCorreoInicioSesion = async (email, token) => {
 const enviarCorreoRestablecimientoContrasena = async (email, token) => {
   try {
     const mailOptions = {
-      from: 'Pet Paradise <angelvelazsalazar@gmail.com>',
+      from: "Pet Paradise <angelvelazsalazar@gmail.com>",
       to: email,
-      subject: 'Restablecimiento de contraseña en Pet Paradise',
+      subject: "Restablecimiento de contraseña en Pet Paradise",
       html: `
         <!DOCTYPE html>
         <html>
@@ -211,32 +219,42 @@ const enviarCorreoRestablecimientoContrasena = async (email, token) => {
           </div>
         </body>
         </html>
-      `
+      `,
     };
 
     // Enviar el correo electrónico
     await transporter.sendMail(mailOptions);
-    console.log('Correo electrónico de restablecimiento de contraseña enviado correctamente a:', email);
+    console.log(
+      "Correo electrónico de restablecimiento de contraseña enviado correctamente a:",
+      email
+    );
   } catch (error) {
-    console.error('Error al enviar el correo electrónico de restablecimiento de contraseña:', error);
+    console.error(
+      "Error al enviar el correo electrónico de restablecimiento de contraseña:",
+      error
+    );
     // Manejo de errores
   }
 };
 
 const enviarCorreoPedido = async (email, pedidoDetalles) => {
   try {
-    const productosList = pedidoDetalles.productos.map(producto => `
+    const productosList = pedidoDetalles.productos
+      .map(
+        (producto) => `
       <li>
         <p>Producto: ${producto.producto}</p>
         <p>Cantidad: ${producto.cantidad}</p>
         <p>Precio total: ${producto.precioTotal}</p>
       </li>
-    `).join('');
+    `
+      )
+      .join("");
 
     const mailOptions = {
-      from: 'angelvelazsalazar@gmail.com',
+      from: "angelvelazsalazar@gmail.com",
       to: email,
-      subject: 'Detalles de tu pedido',
+      subject: "Detalles de tu pedido",
       html: `
         <h1>Detalles de tu pedido</h1>
         <p>Nombre del comprador: ${pedidoDetalles.nombre}</p>
@@ -246,13 +264,13 @@ const enviarCorreoPedido = async (email, pedidoDetalles) => {
         <p>Costo del producto: ${pedidoDetalles.totalAPagar}</p>
         <h2>Productos:</h2>
         <ul>${productosList}</ul>
-      `
+      `,
     };
 
     await transporter.sendMail(mailOptions);
-    console.log('Correo electrónico de pedido enviado correctamente a:', email);
+    console.log("Correo electrónico de pedido enviado correctamente a:", email);
   } catch (error) {
-    console.error('Error al enviar el correo electrónico de pedido:', error);
+    console.error("Error al enviar el correo electrónico de pedido:", error);
     // Manejo de errores
   }
 };
@@ -261,10 +279,9 @@ module.exports = {
   enviarCorreoPedido,
 };
 
-
 module.exports = {
   enviarCorreoRestablecimientoContrasena,
   enviarCorreoInicioSesion,
-  enviarCorreoRegistro,enviarCorreoPedido
+  enviarCorreoRegistro,
+  enviarCorreoPedido,
 };
-

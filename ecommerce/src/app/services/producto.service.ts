@@ -9,7 +9,7 @@ import { CartItem } from '../models/cartItem';
 })
 export class ProductoService {
   private cart: CartItem[] = [];
-  url = 'https://back-end-ayfu.onrender.com/api/productos/';
+  url = 'http://localhost:4000/api/productos/';
 
   constructor(private http: HttpClient) {}
   getProductos(page: number, itemsPerPage: number): Observable<any> {
@@ -17,7 +17,7 @@ export class ProductoService {
     return this.http.get(url);
   }
   getProductDetails(productId: string) {
-    return this.http.get(`https://back-end-ayfu.onrender.com/api/productos/${productId}`);
+    return this.http.get(`http://localhost:4000/api/productos/${productId}`);
   }
   addToCart(product: Producto): void {
     const cartItem: CartItem = {
@@ -51,7 +51,7 @@ export class ProductoService {
   }
 
   obtenerProducto(id: string): Observable<any> {
-    return this.http.get(`https://back-end-ayfu.onrender.com/api/productos/${id}`);
+    return this.http.get(`http://localhost:4000/api/productos/${id}`);
   }
   getProducto(): Observable<any> {
     return this.http.get(this.url);
